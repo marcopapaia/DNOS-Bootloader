@@ -1,0 +1,1 @@
+Stage 1 is 512 bytes big and stored on the boot sector of the disk (if full disk parition) or the first sector of the partition.
