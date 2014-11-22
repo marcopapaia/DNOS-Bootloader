@@ -1,3 +1,0 @@
-cd Bootloader/Stage2/
-sh ./compile.sh
-cd ../../
