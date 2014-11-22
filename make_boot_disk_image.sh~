@@ -1,8 +1,0 @@
-rm boot_disk.img
-
-dd if=Stage1_RAW/Stage1.bin bs=512 count=1 >> boot_disk.img
-dd if=Stage2/stage2.bin bs=10240 count=1 >> boot_disk.img
-
-dd if=/dev/zero bs=1021504 count=1 >> boot_disk.img
-
-# 1032192 bytes total
