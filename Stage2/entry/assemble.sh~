@@ -1,0 +1,2 @@
+rm entry.o
+nasm -f bin "entry.asm" -o "entry.bin"

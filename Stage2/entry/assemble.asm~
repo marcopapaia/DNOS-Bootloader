@@ -1,0 +1,1 @@
+nasm -f elf "asm/entry.asm" -o "entry.o"
