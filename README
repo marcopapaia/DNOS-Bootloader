@@ -1,0 +1,11 @@
+-- To Create a Disk Image --
+
+- Create a disk image
+- Format it to EXT2
+- Write the boot sector to any directory
+- Write the kernel to the root directory, it must be named 'dnos_kernel.elf'
+- Locate the first sector of the boot sector file on the virtual disk
+- Alter the variable at the end of Stage1.asm
+- Reassemble Stage1.asm
+- Copy Stage1.bin to the first sector of the virtual hard disk
+- DNOS should now run
