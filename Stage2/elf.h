@@ -53,7 +53,9 @@ enum Elf_Ident {
 # define ELFMAG3	'F'  // e_ident[3]
  
 # define ELFDATA2LSB 1  // Little Endian
+
 # define ELFCLASS32	 1  // 32-bit Architecture
+# define ELFCLASS64  2
 
 enum Elf_Type {
 	ET_NONE		= 0, // Unkown Type
@@ -61,6 +63,7 @@ enum Elf_Type {
 };
  
 # define EM_386	3  // x86 Machine Type
+# define EM_AMD64 0x3E // amd64 machine type
 
 struct Elf32_Shdr {
 	Elf32_Word	sh_name;
@@ -85,6 +88,51 @@ enum ShT_Attributes {
 	SHF_WRITE	= 0x01, // Writable section
 	SHF_ALLOC	= 0x02  // Exists in memory
 };
+
+
+
+
+
+
+
+typedef uint16_t Elf64_Half;	// Unsigned half int
+typedef uint64_t Elf64_Off;		// Unsigned offset
+typedef uint64_t Elf64_Addr;	// Unsigned address
+typedef uint32_t Elf64_Word;	// Unsigned int
+typedef int32_t  Elf64_Sword;	// Signed int
+typedef uint64_t Elf64_Xword;	// Unsigned 64-bit int
+typedef int64_t  Elf64_Sxword;	// Signed 64-bit int
+
+struct Elf64_Ehdr {
+	uint8_t		e_ident[ELF_NIDENT];
+	Elf64_Half	e_type;
+	Elf64_Half	e_machine;
+	Elf64_Word	e_version;
+	Elf64_Addr	e_entry;
+	Elf64_Off	e_phoff;
+	Elf64_Off	e_shoff;
+	Elf64_Word	e_flags;
+	Elf64_Half	e_ehsize;
+	Elf64_Half	e_phentsize;
+	Elf64_Half	e_phnum;
+	Elf64_Half	e_shentsize;
+	Elf64_Half	e_shnum;
+	Elf64_Half	e_shstrndx;
+} __attribute__((packed));
+
+struct Elf64_Shdr {
+	Elf64_Word sh_name; /* Section name */
+	Elf64_Word sh_type; /* Section type */
+	Elf64_Xword sh_flags; /* Section attributes */
+	Elf64_Addr sh_addr; /* Virtual address in memory */
+	Elf64_Off sh_offset; /* Offset in file */
+	Elf64_Xword sh_size; /* Size of section */
+	Elf64_Word sh_link; /* Link to other section */
+	Elf64_Word sh_info; /* Miscellaneous information */
+	Elf64_Xword sh_addralign; /* Address alignment boundary */
+	Elf64_Xword sh_entsize; /* Size of entries, if section has table */
+} ;
+
 
 bool elf_check_header(struct Elf32_Ehdr * header);
 

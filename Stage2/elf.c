@@ -19,10 +19,10 @@ bool elf_check_header(struct Elf32_Ehdr * header)
 // 0 = unsupported, 1 = x86, 2 will be amd64
 int elf_get_type(struct Elf32_Ehdr * header)
 {
-	if(header->e_machine != EM_386) {
+	if(header->e_machine != EM_386 && header->e_machine != EM_AMD64) {
 		return 0;
 	}
-	if(header->e_ident[EI_CLASS] != ELFCLASS32) {
+	if(header->e_ident[EI_CLASS] != ELFCLASS32 && header->e_ident[EI_CLASS] != ELFCLASS64) {
 		return 0;
 	}	
 	if(header->e_ident[EI_DATA] != ELFDATA2LSB) {
@@ -31,5 +31,5 @@ int elf_get_type(struct Elf32_Ehdr * header)
 	if(header->e_type != ET_EXEC) {
 		return 0;
 	}
-	return 1;
+	return header->e_ident[EI_CLASS];
 }
