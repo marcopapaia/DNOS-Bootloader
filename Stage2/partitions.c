@@ -70,8 +70,8 @@ void partition_manager_init()
 void get_partition(unsigned char * data, unsigned disk, unsigned MBROffset)
 {
 	if(data[MBROffset] != 0){
-		uint32_t startSector = *(uint32_t *)&data[446 + 8];
-		uint32_t sectors = *(uint32_t *)&data[446 + 12];
+		uint32_t startSector = *(uint32_t *)&data[MBROffset + 8];
+		uint32_t sectors = *(uint32_t *)&data[MBROffset + 12];
 		if(startSector + sectors <= hdd_devices[disk].sectorCount){
 			struct PARTITION p;
 			p.disk = disk;
