@@ -62,14 +62,16 @@ void _start()
 	
 	hide_cursor();
 	
-	display_clear(0x00);
+	display_clear(0xDD);
 
-	display_place_string(0, 0, "DNOS Bootloader alpha", 0x0F);
+	display_place_string(0, 0, "DNOS Bootloader Alpaca", 0x0F);
 	display_place_string(0, 24, "DNOS Bootloader is Setting Up...", 0x03);
 		
 	pmm_init();
+	display_put_character(0, 0, 'A', 0x0F);// For debugging on real hardware
 	
 	struct mmap_entry* mmap = (struct mmap_entry *)0x28400;
+	display_put_character(0, 0, 'B', 0x0F);
 
 	for (unsigned i = 0; i < totalMemMapEntries; i++){
 		if (mmap->type == 1){
@@ -77,13 +79,18 @@ void _start()
 		}
 		mmap++;
 	}
+	display_put_character(0, 0, 'C', 0x0F);
 	
 	pmm_allocate_region(0, 1024*1024);
+	display_put_character(0, 0, 'E', 0x0F);
 	
 	idt_init();
+	display_put_character(0, 0, 'F', 0x0F);
 	pic_init();
+	display_put_character(0, 0, 'G', 0x0F);
 	pit_init();
 	
+	display_put_character(0, 0, 'H', 0x0F);
 	
 	/* Ready paging */
 	
@@ -101,18 +108,24 @@ void _start()
 	
 	pdt[0] = ((uint32_t) page_table_0) | 3;
 	page_table_0[6] = ((uint32_t)pdt) | 3;
+	
+	display_put_character(1, 0, '1', 0x0F);
 		
 	
 	__asm__ ("sti");
 	hdd_detect_devices();
+	display_put_character(2, 0, '2', 0x0F);
 	
 	partition_manager_init();
+	display_put_character(3, 0, '3', 0x0F);
 	
 	for(int i = 0; i < MAX_PARTITIONS; i++){
 		struct PARTITION * p = &partitions[i];
 		if(p->fileSystem == FILE_SYSTEM_EXT2){
+		display_put_character(4, 0, '4', 0x0F);
 			if(ext2_DNOSIC_file_exists(p)){
 				// DNOS Partition
+				display_put_character(5, 0, '5', 0x0F);
 				
 				bootInfo.bootDevice = 0;// HDD;
 				bootInfo.bootDevice2 = p->disk;

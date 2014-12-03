@@ -185,8 +185,8 @@ PARTITION_1_partition_type	db 0
 PARTITION_1_chs_end_0 		db 0
 PARTITION_1_chs_end_1 		db 0
 PARTITION_1_chs_end_2 		db 0
-PARTITION_1_LBA_start		dd 1
-PARTITION_1_LBA_size		dd 2015
+PARTITION_1_LBA_start		dd 63
+PARTITION_1_LBA_size		dd 16384
 
 
 PARTITION_2:

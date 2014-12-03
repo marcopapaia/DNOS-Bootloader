@@ -21,10 +21,15 @@ uint32_t pmm_used_blocks()
 void pmm_init(){
 	pmm_total_blocks = totalRAM / 4;
 	used_blocks = pmm_total_blocks;
+	display_put_character(0, 0, 'Z', 0x0F);
 
 	unsigned t = (pmm_total_blocks+32) / 32;
+	char buf[10];
+	itoa(t, 10, buf);
+	display_place_string(0, 2, buf, 3);
 	for(unsigned i = 0; i < t; i++)
 		pmm_memory_bitmap[i] = 0xFF;
+	display_put_character(0, 0, 'Y', 0x0F);
 }
 
 unsigned pmm_free_blocks(){

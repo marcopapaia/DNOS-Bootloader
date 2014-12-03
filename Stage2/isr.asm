@@ -2,12 +2,19 @@
 
 bits 32
 
-;extern display_place_string
+extern display_place_string
 
 section .text
 
 global INTERRUPT_HANDLER_DEFAULT
 INTERRUPT_HANDLER_DEFAULT:
+	push 0x0F
+	push str_unhandled_int
+	push 15
+	push 15
+	call display_place_string
+	cli
+	hlt
 	iretd
 	
 global PIC_LOWER_INTERRUPT_IGNORE_INTERRUPT
@@ -50,11 +57,8 @@ install_idt:
 
 
 	
-;section .rodata
-;str_unhandled_int: db "Unhandled interrupt!", 0
+section .rodata
+str_unhandled_int: db "Unhandled interrupt!", 0
 
-section .bss
-global idt
-resb 2048
 
 
