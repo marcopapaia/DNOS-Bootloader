@@ -63,6 +63,6 @@ FAILURE:
   cli
   hlt
 
-TIMES 501-($-$$) DB 0x20
+TIMES 510-($-$$) DB 0x20
 
 DW 0xAA55
