@@ -27,6 +27,9 @@ jmp 0:AFTER_MOVING_CODE
 
 AFTER_MOVING_CODE:
 
+pop dx
+mov BYTE[driveNum], dl
+
 ; Check for int 13h extensions support
 
 mov ah, 0x41
@@ -119,14 +122,13 @@ jc FAILURE
 or ah, ah
 jne FAILURE
 
+;ds:bp = MBR partition struct pointer
 pop bp
 
 ; * Execute boot sector of partition * ;
 
 cli
-pop dx
 mov sp, 0x6000
-;ds:bp = MBR partition struct pointer
 jmp WORD[INT13INFO_addr_off]
 
 
