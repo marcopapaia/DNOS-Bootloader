@@ -24,6 +24,6 @@ dd if=entry/entry.bin of=stage2.bin
 dd if=pmode_text.bin >> stage2.bin
 dd if=pmode_rodata.bin >> stage2.bin
 dd if=pmode_data.bin >> stage2.bin
-truncate stage2.bin --size=20k 
+truncate stage2.bin --size=31k 
 
 rm *.o
