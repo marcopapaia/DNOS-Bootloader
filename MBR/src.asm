@@ -63,7 +63,7 @@ je partition1
 cmp al, 'd'
 je goDNOSbootloader
 
-jg partition_selection
+jmp partition_selection
 
 ; * Check parittion is valid and load starting sector * ;
 
@@ -102,7 +102,7 @@ jmp load_partition
 goDNOSbootloader:
 mov DWORD[INT13INFO_blkcnt], 62
 mov WORD[INT13INFO_addr_off], 0x1000
-jmp load_partition
+;jmp load_partition
 
 
 load_partition:
@@ -125,11 +125,9 @@ pop bp
 
 cli
 pop dx
-mov sp, 0x5000
-xor ax, ax
-mov ds, ax
+mov sp, 0x6000
 ;ds:bp = MBR partition struct pointer
-jmp 0x7C00
+jmp WORD[INT13INFO_addr_off]
 
 
 ; -- Data/Functions --
