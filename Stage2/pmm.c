@@ -8,7 +8,7 @@
 #define unlikely(x)     __builtin_expect((x),0)
 #define likely(x)       __builtin_expect((x),1)
 
-uint32_t* pmm_memory_bitmap = (uint32_t *)0x7C00;
+uint32_t* pmm_memory_bitmap = (uint32_t *)0x38400;
 uint32_t pmm_total_blocks = 0;
 uint32_t used_blocks = 0;
 extern uint32_t totalRAM;
@@ -23,7 +23,7 @@ void pmm_init(){
 	used_blocks = pmm_total_blocks;
 	display_put_character(0, 0, 'Z', 0x0F);
 
-	unsigned t = (pmm_total_blocks+32) / 32;
+	unsigned t = (pmm_total_blocks+0) / 32;
 	char buf[10];
 	itoa(t, 10, buf);
 	display_place_string(0, 2, buf, 3);
