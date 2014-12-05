@@ -64,7 +64,7 @@ void _start()
 	
 	display_clear(0xDD);
 
-	display_place_string(0, 0, "DNOS Bootloader Alpaca", 0x0F);
+	display_place_string(0, 0, "DNOS Bootloader alpha", 0x0F);
 	display_place_string(0, 24, "DNOS Bootloader is Setting Up...", 0x03);
 		
 	pmm_init();
@@ -121,8 +121,8 @@ void _start()
 	
 	for(int i = 0; i < MAX_PARTITIONS; i++){
 		struct PARTITION * p = &partitions[i];
+		if(!p->present) continue;
 		if(p->fileSystem == FILE_SYSTEM_EXT2){
-		display_put_character(4, 0, '4', 0x0F);
 			if(ext2_DNOSIC_file_exists(p)){
 				// DNOS Partition
 				display_put_character(5, 0, '5', 0x0F);
