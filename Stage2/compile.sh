@@ -1,3 +1,5 @@
+set -e
+
 nasm -f elf "io.asm" -o "io.o"
 nasm -f elf "isr.asm" -o "isr.o"
 nasm -f elf "util.asm" -o "util.o"
