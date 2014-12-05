@@ -1,11 +1,13 @@
 -- To Create a Disk Image --
 
 - Create a disk image
-- Format it to EXT2
-- Write the boot sector to any directory
-- Write the kernel to the root directory, it must be named 'dnos_kernel.elf'
-- Locate the first sector of the boot loader file on the virtual disk
-- Alter the variable at the end of Stage1.asm
-- Reassemble Stage1.asm
-- Copy Stage1.bin to the first sector of the virtual hard disk
-- DNOS should now run
+- Partition it with fdisk (or manually)
+- Replace the MBR if disired (should not be necessary)
+- Format a parition to EXT2
+- Write the stage 1 boot sector (necessary if custom MBR is not used)
+- Write stage 2 to sectors 1 - 62 inclusive
+- Mount the partition (loop devices work well on linux)
+- Create a file named 'DNOSIC.CFG'
+- Copy the compiled x86 output file, it must be named 'dnos_kernel.elf'
+- Unmount the disk
+- DNOS should run in qemu and bochs
