@@ -19,12 +19,11 @@ void get_partitions(unsigned char * data, unsigned disk);
 
 // Returns 0 for no, 1 for FAT12, 2 for FAT16, 2 for FAT32
 bool is_fat_boot_sector(unsigned char * data);
-bool is_ntfs_boot_sector(unsigned char * data);
 bool is_ext_file_system();
 
 void partition_manager_init()
 {
-	for(unsigned i = 0; i < sizeof(partitions); i++){
+	for(unsigned i = 0; i < (sizeof(struct PARTITION) * MAX_PARTITIONS); i++){
 		((char *)&partitions)[i] = 0;
 	}
 	
@@ -32,10 +31,7 @@ void partition_manager_init()
 		if(hdd_devices[i].exists){
 			unsigned char bootSector[512];
 			int err = hdd_read_sectors((uint16_t *) &bootSector[0], 1, i, 0);
-			if(err != 0){
-				err = hdd_read_sectors((uint16_t *) &bootSector[0], 1, i, 0);
-				if(err != 0) continue;// Abandon Drive!
-			}
+			if(err != 0) continue;// Abandon Drive!
 			if(!is_mbr(&bootSector[0])){
 				struct PARTITION p;
 				p.disk = i;
@@ -44,49 +40,32 @@ void partition_manager_init()
 				p.fileSystem = 0;
 			
 				add_partition(&p);
-				continue;
+			} else {
+				get_partitions(&bootSector[0], i);
 			}
 			
-			get_partitions(&bootSector[0], i);
 		}
 	}
 	
 	for(int i = 0; i < MAX_PARTITIONS; i++){
-		unsigned char bootSector[512];
-		int err = hdd_read_sectors((uint16_t *) &bootSector[0], 1, partitions[i].disk, partitions[i].startSector);
-		if (err == 0){
-			if(is_fat_boot_sector(&bootSector[0])){
-				// FAT
-			} else if(is_ntfs_boot_sector(&bootSector[0])){
-				// NTFS
-			} else if(is_ext_file_system(&partitions[i])){
-				// EXT
+		if (partitions[i].present){
+			unsigned char bootSector[512];
+			int err = hdd_read_sectors((uint16_t *) &bootSector[0], 1, partitions[i].disk, partitions[i].startSector);
+			if (err == 0){
+				if(is_fat_boot_sector(&bootSector[0])){
+					// FAT
+				} else if(is_ext_file_system(&partitions[i])){
+					// EXT
+				}
 			}
 		}
 	}
 	
 }
 
-void get_partition(unsigned char * data, unsigned disk, unsigned MBROffset)
-{
-	if(data[MBROffset] != 0){
-		uint32_t startSector = *(uint32_t *)&data[MBROffset + 8];
-		uint32_t sectors = *(uint32_t *)&data[MBROffset + 12];
-		if(startSector + sectors <= hdd_devices[disk].sectorCount){
-			struct PARTITION p;
-			p.disk = disk;
-			p.startSector = startSector;
-			p.sectors = sectors;
-			p.fileSystem = 0;
-			
-			add_partition(&p);
-		}
-	}
-}
-
 bool is_ext_file_system(struct PARTITION * p){
 	struct EXT2_SUPERBLOCK * superBlock = (struct EXT2_SUPERBLOCK *) pmm_allocate_block();
-	hdd_read_sectors((uint16_t *) superBlock, 2, p->disk, 2);
+	hdd_read_sectors((uint16_t *) superBlock, 2, p->disk, p->startSector + 2);
 	
 	if(superBlock->ext2Signature != 0xEF53){
 		p->fileSystem = 0;
@@ -108,10 +87,21 @@ bool is_fat_boot_sector(unsigned char * data)
 	return 0;
 }
 
-bool is_ntfs_boot_sector(unsigned char * data)
+void get_partition(unsigned char * data, unsigned disk, unsigned MBROffset)
 {
-	(void)data;
-	return false;
+	if(data[MBROffset] != 0){
+		uint32_t startSector = *((uint32_t *)&data[MBROffset + 8]);
+		uint32_t sectors = *((uint32_t *)&data[MBROffset + 12]);
+		if((startSector + sectors) <= hdd_devices[disk].sectorCount){
+			struct PARTITION p;
+			p.disk = disk;
+			p.startSector = startSector;
+			p.sectors = sectors;
+			p.fileSystem = 0;
+			
+			add_partition(&p);
+		}
+	}
 }
 
 void get_partitions(unsigned char * data, unsigned disk)
@@ -125,9 +115,10 @@ void get_partitions(unsigned char * data, unsigned disk)
 bool is_mbr(unsigned char * data)
 {
 	if(data[446] != 0 && data[446] < 0x7F) return false;
-	if(data[462] != 0 && data[446] < 0x7F) return false;
-	if(data[478] != 0 && data[446] < 0x7F) return false;
-	if(data[494] != 0 && data[446] < 0x7F) return false;
+	if(data[462] != 0 && data[462] < 0x7F) return false;
+	if(data[478] != 0 && data[478] < 0x7F) return false;
+	if(data[494] != 0 && data[494] < 0x7F) return false;
+	if(data[446]==0 && data[462]==0 && data[478]==0 && data[494]==0) return false;
 	return true;
 }
 
