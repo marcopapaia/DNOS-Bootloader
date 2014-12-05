@@ -28,7 +28,7 @@ bool ext2_DNOSIC_file_exists(struct PARTITION * p){
 	fsData->blockSize = blockSize;
 	
 	char blockGroup_data[512];
-	int err = hdd_read_sectors((uint16_t *)&blockGroup_data[0], 1, p->disk, 2 + blockSize/512);
+	int err = hdd_read_sectors((uint16_t *)&blockGroup_data[0], 1, p->disk, p->startSector + 2 + blockSize/512);
 	if(err) return false;
 	
 	struct EXT2_BLOCK_GROUP_DESCRIPTOR * blockGroup = (struct EXT2_BLOCK_GROUP_DESCRIPTOR *) &blockGroup_data[0];
