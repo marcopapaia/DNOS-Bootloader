@@ -9,15 +9,18 @@ mov es, ax
 mov fs, ax
 mov gs, ax
  
-mov ax, 9BFFh
+mov ax, 6000h
 mov ss, ax
 mov sp, 0
 
 push dx
-mov ax, es
 
 cld
 sti
+
+mov ah, 0eh
+mov al, ':'
+int 10h
 
 mov di, 0x600; Destination
 mov si, 0x7C00; Source
@@ -129,7 +132,6 @@ pop bp
 ; * Execute boot sector of partition * ;
 
 cli
-xchg bx, bx
 jmp WORD[INT13INFO_addr_off]
 
 
