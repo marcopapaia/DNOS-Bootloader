@@ -18,10 +18,6 @@ push dx
 cld
 sti
 
-mov ah, 0eh
-mov al, ':'
-int 10h
-
 mov di, 0x600; Destination
 mov si, 0x7C00; Source
 mov cx, 512
